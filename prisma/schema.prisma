@@ -1,0 +1,26 @@
+
+generator client {
+  provider = "prisma-client"
+  output   = "../prisma/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+model Estado {
+  id     Int    @id @default(autoincrement())
+  sigla  String
+  nome   String
+  regiao Json
+}
+
+model Dashboard {
+  id        Int    @id @default(autoincrement())
+  indicador String
+  regiao    String
+  figura    Json   
+  kpis      Json  
+  @@unique([indicador, regiao]) 
+}
