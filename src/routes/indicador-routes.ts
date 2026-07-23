@@ -1,4 +1,4 @@
-import { IndicadorController } from "../controller/indicador.controller";
+import { IndicadorController } from "../controller/indicador.controller.js";
 import { Router } from "express";
 
 const indicadorRoutes = Router();

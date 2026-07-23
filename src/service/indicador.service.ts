@@ -1,7 +1,7 @@
 import axios from "axios";
-import { prisma } from "../database/prisma";
-import { AppError } from "../utils/AppError";
-import type { Prisma } from "../generated/prisma/client";
+import { prisma } from "../database/prisma.js";
+import { AppError } from "../utils/AppError.js";
+import type { Prisma } from "../generated/prisma/client.js";
 
 type JsonEntrada = Prisma.InputJsonValue;
 
