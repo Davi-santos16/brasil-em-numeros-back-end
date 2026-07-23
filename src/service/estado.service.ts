@@ -22,19 +22,25 @@ export async function popularEstadosSeed() {
       "https://servicodados.ibge.gov.br/api/v1/localidades/estados?orderBy=nome",
     );
 
-    const dadosParaInserir = data.map((uf) => ({
-      sigla: uf.sigla,
-      nome: uf.nome,
-      regiao: uf.regiao as any,
-    }));
-
-    const resultado = await prisma.estado.createMany({
-      data: dadosParaInserir,
-      skipDuplicates: true,
-    });
+    const estados = await Promise.all(
+      data.map((uf) =>
+        prisma.estado.upsert({
+          where: { sigla: uf.sigla },
+          update: {
+            nome: uf.nome,
+            regiao: uf.regiao as any,
+          },
+          create: {
+            sigla: uf.sigla,
+            nome: uf.nome,
+            regiao: uf.regiao as any,
+          },
+        }),
+      ),
+    );
 
     console.log(
-      `✅ Sucesso! ${resultado.count} estados inseridos no banco de dados.`,
+      `✅ Sucesso! ${estados.length} estados sincronizados no banco de dados.`,
     );
   } catch (error) {
     console.error("❌ Erro ao popular a tabela de estados:", error);

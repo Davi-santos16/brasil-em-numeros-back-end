@@ -20,4 +20,7 @@ CREATE TABLE "Dashboard" (
 );
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Estado_sigla_key" ON "Estado"("sigla");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Dashboard_indicador_regiao_key" ON "Dashboard"("indicador", "regiao");

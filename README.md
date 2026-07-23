@@ -1,200 +1,247 @@
+# Brasil em Numeros - Backend
 
-# 🇧🇷 Brasil em Números - Backend
+API backend do projeto **Brasil em Numeros**, desenvolvida com Node.js, Express, TypeScript, Prisma ORM e PostgreSQL.
 
-Este é o repositório da API do **Brasil em Números**, um backend moderno, robusto e escalável desenvolvido em **Node.js**, **Express (v5)**, **TypeScript** e **Prisma ORM** integrado com **PostgreSQL**. A API tem como principal objetivo disponibilizar dados e indicadores sobre os estados e regiões do Brasil.
+O projeto expõe dados de estados brasileiros salvos no banco local e possui uma rota de dashboard com cache em banco: se o indicador ja foi consultado antes, a API responde usando o PostgreSQL; se ainda nao existe no banco, consulta a API da equipe de analise de dados, salva o resultado e retorna a resposta ao front-end.
 
-O projeto conta com um sistema de **seed automático** que consome a API oficial do IBGE para popular inicialmente a base de dados com as informações atualizadas das unidades federativas brasileiras de forma automatizada.
+## Tecnologias
 
----
+- Node.js
+- Express 5
+- TypeScript
+- Prisma ORM 7
+- PostgreSQL 16
+- Docker Compose
+- Axios
+- CORS
+- dotenv
 
-## 🚀 Funcionalidades Principais
-
-- **Arquitetura Limpa e Modular:** Separação clara de responsabilidades entre Rotas, Controllers, Services, Middlewares e Banco de Dados.
-- **TypeScript de Ponta:** Utilização de aliases de caminho (`@/*` mapeado para `src/*`) configurados nativamente via `tsconfig.json`.
-- **Express 5.x:** Integração com a versão mais recente e moderna do framework de roteamento.
-- **Prisma ORM (v7) com Adapter PG:** Uso de adapters nativos do PostgreSQL (`@prisma/adapter-pg`) para melhor performance e flexibilidade, utilizando o arquivo de configuração moderno `prisma.config.ts`.
-- **Ambiente Dockerizado:** Setup de banco de dados PostgreSQL rápido e isolado utilizando Docker Compose.
-- **Seeding Inteligente:** Integração com a API de localidades do IBGE para popular o banco de dados sem esforço manual.
-- **Tratamento de Erros Global:** Middleware especializado para captura e tratamento de erros operacionais (`AppError`) e inesperados (500).
-
----
-
-## 🛠️ Tecnologias Utilizadas
-
-| Tecnologia | Descrição | Versão Principal |
-| :--- | :--- | :--- |
-| **Node.js** | Ambiente de execução JavaScript | v18+ |
-| **Express** | Framework web para criação de APIs | 5.2.x |
-| **TypeScript** | Superset tipado e seguro do JavaScript | 7.0.x |
-| **Prisma ORM** | Object-Relational Mapping (ORM) moderno | 7.9.x |
-| **PostgreSQL** | Banco de dados relacional robusto e estável | v16 |
-| **Docker** | Conteinerização rápida do banco de dados | - |
-| **Axios** | Cliente HTTP para consumir a API do IBGE | 1.18.x |
-| **tsx watch** | Execução e reinicialização ágil em desenvolvimento | 4.23.x |
-
----
-
-## 📂 Estrutura de Pastas
-
-Abaixo está a organização das pastas e principais arquivos do projeto:
+## Estrutura do Projeto
 
 ```text
 brasil-em-numeros-backend/
-├── prisma/                          # Configurações do banco de dados e ORM
-│   ├── schema.prisma                # Definição do schema e modelos de dados
-│   ├── seed.ts                      # Script de inicialização (Seed)
-│   └── migrations/                  # Histórico de alterações do banco de dados
-├── src/                             # Código-fonte da aplicação
-│   ├── server.ts                    # Ponto de entrada (Bootstrap do Express)
-│   ├── controller/                  # Lógica de controle de rotas (EstadosController)
-│   ├── database/                    # Instanciação do Prisma Client com adaptador PG
-│   ├── middleware/                  # Middlewares globais (Tratamento de erros)
-│   ├── routes/                      # Definições e centralização de rotas HTTP
-│   ├── service/                     # Regras de negócio e integração com IBGE
-│   └── utils/                       # Utilitários e classes auxiliares (AppError)
-├── .env.example                     # Modelo das variáveis de ambiente
-├── docker-compose.yml               # Configuração do container PostgreSQL
-├── prisma.config.ts                 # Configurações modernas do Prisma (v7+)
-└── tsconfig.json                    # Configurações do compilador TypeScript
+├── prisma/
+│   ├── migrations/              # Historico de migrations do banco
+│   ├── schema.prisma            # Modelos Estado e Dashboard
+│   └── seed.ts                  # Seed inicial dos estados via API do IBGE
+├── src/
+│   ├── controller/              # Controllers das rotas HTTP
+│   ├── database/                # Instancia do Prisma Client
+│   ├── middleware/              # Middleware global de erros
+│   ├── routes/                  # Definicao e agrupamento das rotas
+│   ├── service/                 # Servicos e integracoes externas
+│   ├── utils/                   # Utilitarios da aplicacao
+│   └── server.ts                # Entrada da aplicacao Express
+├── docker-compose.yml           # PostgreSQL local
+├── prisma.config.ts             # Configuracao do Prisma
+├── package.json                 # Scripts e dependencias
+└── tsconfig.json                # Configuracao TypeScript
 ```
 
----
+## Requisitos
 
-## 📋 Pré-requisitos
+- Node.js 18 ou superior
+- npm
+- Docker e Docker Compose
 
-Para rodar o projeto localmente, certifique-se de ter instalado em sua máquina:
-1. **Node.js** (versão 18 ou superior)
-2. **NPM** (gerenciador de pacotes padrão) ou Yarn / Pnpm
-3. **Docker** & **Docker Compose**
+## Configuracao
 
----
+1. Instale as dependencias:
 
-## ⚙️ Instruções de Instalação e Execução (Passo a Passo)
-
-Siga os passos abaixo sequencialmente para clonar, configurar e rodar o projeto do zero:
-
-### 1. Clonar o Repositório
-```bash
-git clone https://github.com/seu-usuario/brasil-em-numeros-backend.git
-cd brasil-em-numeros-backend
-```
-
-### 2. Instalar as Dependências
-Instale todas as dependências do projeto listadas no `package.json`:
 ```bash
 npm install
 ```
 
-### 3. Configurar as Variáveis de Ambiente
-Copie o arquivo de exemplo para criar o seu arquivo `.env`:
+2. Crie o arquivo `.env` a partir do exemplo:
+
 ```bash
 cp .env.example .env
 ```
-O arquivo `.env` gerado virá com a string padrão de conexão com o banco de dados rodando no Docker local:
+
+3. Confira as variaveis de ambiente:
+
 ```env
 DATABASE_URL="postgresql://postgres:postgres@localhost:5432/api-brasil-ibge?schema=public"
+API_DADOS_URL="http://localhost:3000"
 ```
 
-### 4. Subir o Banco de Dados com Docker
-Inicie o container do PostgreSQL em segundo plano utilizando o Docker Compose:
+`DATABASE_URL` e usada pelo Prisma para conectar ao PostgreSQL. `API_DADOS_URL` e usada pela rota `/dashboard` para consultar a API externa de indicadores.
+
+## Rodando Localmente
+
+1. Suba o PostgreSQL:
+
 ```bash
 docker compose up -d
 ```
-*Isso criará e iniciará uma instância do Postgres na porta `5432` com o usuário `postgres` e senha `postgres` conforme configurado em `docker-compose.yml`.*
 
-### 5. Executar as Migrations e Popular o Banco (Seed)
-Execute o comando do Prisma para rodar as migrations (criar as tabelas no banco de dados). Este comando também irá gerar localmente o Prisma Client e, ao final, executará o script de **seed automático** que busca os estados brasileiros da API do IBGE e os grava no seu banco local:
+2. Execute as migrations:
+
 ```bash
 npx prisma migrate dev
 ```
-*(Opcional) Caso queira rodar apenas o processo de seed separadamente em um banco de dados já migrado:*
+
+Esse comando aplica as migrations e gera o Prisma Client.
+
+3. Execute o seed para popular a tabela `Estado` com dados da API publica do IBGE:
+
 ```bash
 npx prisma db seed
 ```
 
-### 6. Iniciar o Servidor em Desenvolvimento
-Com o banco de dados pronto e populado, inicie o servidor Express local:
+4. Inicie o servidor em desenvolvimento:
+
 ```bash
 npm run dev
 ```
-O servidor começará a rodar e exibirá a seguinte mensagem de sucesso no terminal:
+
+Por padrao, a API roda em:
+
 ```text
-Server esta rodando na porta 3333
+http://localhost:3333
 ```
 
----
+## Scripts
 
-## 🗄️ Modelagem de Dados (Banco de Dados)
+| Comando | Descricao |
+| --- | --- |
+| `npm run dev` | Inicia o servidor com `tsx watch src/server.ts` |
 
-O banco de dados PostgreSQL possui duas entidades principais configuradas no `prisma/schema.prisma`:
+## Banco de Dados
 
-### `Estado`
-Armazena as informações das unidades federativas do Brasil obtidas via IBGE.
-- `id` (Int, Autoincrement, Chave Primária): Identificador único interno.
-- `sigla` (String): Sigla do estado (ex: `SP`, `RJ`, `MG`).
-- `nome` (String): Nome completo do estado (ex: `São Paulo`).
-- `regiao` (Json): Objeto que armazena os dados da região geográfica (ID, sigla e nome).
+O schema Prisma define dois modelos.
 
-### `Dashboard`
-Armazena indicadores e métricas consolidadas por região geográfica.
-- `id` (Int, Autoincrement, Chave Primária): Identificador único interno.
-- `indicador` (String): Nome do indicador ou métrica específica.
-- `regiao` (String): Nome ou sigla da região associada.
-- `figura` (Json): Dados visuais ou estruturais sobre a representação gráfica.
-- `kpis` (Json): Indicadores-chave de performance detalhados.
-- **Restrição Unique:** `[indicador, regiao]` composto, impedindo duplicidade do mesmo indicador para a mesma região.
+### Estado
 
----
+Armazena unidades federativas brasileiras importadas da API do IBGE.
 
-## 🔌 Endpoints da API
+| Campo | Tipo | Descricao |
+| --- | --- | --- |
+| `id` | `Int` | Chave primaria autoincremental |
+| `sigla` | `String` | Sigla unica da UF, como `CE`, `SP` ou `RJ` |
+| `nome` | `String` | Nome do estado |
+| `regiao` | `Json` | Dados da regiao retornados pelo IBGE |
 
-A API disponibiliza atualmente a rota principal para consulta de estados:
+### Dashboard
 
-### 1. Listar Estados
-Retorna todos os estados brasileiros cadastrados, ordenados alfabeticamente por nome.
+Armazena indicadores por regiao retornados pela API da equipe de analise de dados.
 
-- **Método:** `GET`
-- **Rota:** `/estados`
-- **URL Completa (Local):** `http://localhost:3333/estados`
-- **Resposta de Sucesso (200 OK):**
-  ```json
-  {
-    "estados": [
-      {
+| Campo | Tipo | Descricao |
+| --- | --- | --- |
+| `id` | `Int` | Chave primaria autoincremental |
+| `indicador` | `String` | Nome ou identificador do indicador |
+| `regiao` | `String` | Regiao associada ao indicador |
+| `figura` | `Json` | Dados estruturados para visualizacao |
+| `kpis` | `Json` | Indicadores consolidados |
+
+Existe uma restricao unica composta por `indicador` e `regiao`. Essa chave e usada como cache para evitar chamadas repetidas para a API externa quando o front-end solicitar o mesmo indicador para a mesma regiao.
+
+## Endpoints
+
+### `GET /estados`
+
+Lista todos os estados cadastrados, ordenados pelo nome.
+
+Exemplo de resposta:
+
+```json
+{
+  "estados": [
+    {
+      "id": 1,
+      "sigla": "AC",
+      "nome": "Acre",
+      "regiao": {
         "id": 1,
-        "sigla": "AC",
-        "nome": "Acre",
-        "regiao": {
-          "id": 1,
-          "sigla": "N",
-          "nome": "Norte"
-        }
-      },
-      {
-        "id": 2,
-        "sigla": "AL",
-        "nome": "Alagoas",
-        "regiao": {
-          "id": 2,
-          "sigla": "NE",
-          "nome": "Nordeste"
-        }
+        "sigla": "N",
+        "nome": "Norte"
       }
-      // ... demais estados ordenados por nome
-    ]
+    }
+  ]
+}
+```
+
+### `GET /dashboard`
+
+Consulta dados de dashboard usando cache no banco de dados.
+
+Query params:
+
+| Parametro | Obrigatorio | Descricao |
+| --- | --- | --- |
+| `indicador` | Sim | Indicador a ser consultado |
+| `regiao` | Nao | Regiao usada como filtro |
+
+Exemplo:
+
+```text
+GET /dashboard?indicador=populacao&regiao=Nordeste
+```
+
+Fluxo interno:
+
+1. Procura no banco um registro com o mesmo `indicador` e a mesma `regiao`.
+2. Se encontrar, retorna os dados salvos na tabela `Dashboard`.
+3. Se nao encontrar, chama a API externa em:
+
+```text
+{API_DADOS_URL}/grafico
+```
+
+4. Salva `figura` e `kpis` no banco.
+5. Retorna os dados salvos ao front-end.
+
+Exemplo de resposta:
+
+```json
+{
+  "dadosDaEquipe": {
+    "indicador": "populacao",
+    "regiao": "Nordeste",
+    "figura": {},
+    "kpis": {}
   }
-  ```
+}
+```
 
----
+Para o cache funcionar, a API externa deve retornar um JSON contendo os campos `figura` e `kpis`.
 
-## 🛡️ Tratamento de Erros e Padrões de Código
+## Seed de Estados
 
-- **AppError:** Uma classe utilitária personalizada (`src/utils/AppError.ts`) que modela exceções de negócio operacionais conhecidas (ex: falhas de validação, recursos não encontrados). Ela recebe uma mensagem clara e um código HTTP customizado (padrão 400).
-- **Middleware Global de Erros:** Todas as exceções não capturadas no fluxo normal das rotas caem no middleware `errorHandling` (`src/middleware/error-handling.ts`). Ele intercepta o erro, verifica se é do tipo `AppError` e devolve uma resposta elegante ao cliente. Erros de sistema inesperados são tratados e mascarados com um status `500 Internal Server Error` genérico por motivos de segurança.
-- **Path Aliases (`@/`):** Facilita importações dentro do código. Graças ao `tsconfig.json`, você pode importar arquivos usando `@/controller/` ou `@/utils/` ao invés de usar referências relativas complexas como `../../utils/`.
+O seed fica em `prisma/seed.ts` e chama `popularEstadosSeed()` em `src/service/estado.service.ts`.
 
----
+A origem dos dados e a API publica do IBGE:
 
-## 👥 Equipe / Autoria
+```text
+https://servicodados.ibge.gov.br/api/v1/localidades/estados?orderBy=nome
+```
 
-Desenvolvido com carinho pelo **Squad 2** 🚀.
+O seed sincroniza `sigla`, `nome` e `regiao` de cada estado na tabela `Estado`.
+
+Para atualizar os estados quando o IBGE mudar os dados, execute novamente:
+
+```bash
+npx prisma db seed
+```
+
+O campo `sigla` e unico no banco, e o seed usa `upsert`. Por isso, se o estado ainda nao existir ele sera criado; se ja existir, `nome` e `regiao` serao atualizados.
+
+## Tratamento de Erros
+
+A aplicacao possui um middleware global em `src/middleware/error-handling.ts`.
+
+- Erros do tipo `AppError` retornam o status configurado na propria excecao.
+- Erros inesperados retornam status `500` com a mensagem do erro.
+
+Na rota `/dashboard`, quando o parametro `indicador` nao e enviado, a API retorna erro `400`.
+
+## Observacoes de Desenvolvimento
+
+- A aplicacao usa alias de importacao `@/*` apontando para `src/*`.
+- O Prisma Client e gerado em `prisma/generated/prisma`, conforme `schema.prisma`.
+- O servidor Express usa CORS e JSON parser globalmente.
+- A porta da API esta fixa em `3333` no arquivo `src/server.ts`.
+
+## Autoria
+
+Projeto desenvolvido pelo **Squad 2**.
