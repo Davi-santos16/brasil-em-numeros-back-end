@@ -11,6 +11,10 @@
     "strict": true,
     "skipLibCheck": true,
     "types": ["node"],
-    "isolatedModules": true
-  }
+    "isolatedModules": true,
+    "rootDir": "./src",
+    "outDir": "./dist"
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
 }
