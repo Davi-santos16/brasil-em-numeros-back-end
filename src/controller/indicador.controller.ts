@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { AppError } from "../utils/AppError.js";
-import { buscarDashboard } from "../service/indicador.service.js";
+import { AppError } from "../utils/AppError";
+import { buscarDashboard } from "../service/indicador.service";
 
 export class IndicadorController {
   async index(request: Request, response: Response) {

@@ -1,5 +1,6 @@
+import { prisma } from "@/database/prisma.js";
 import axios from "axios";
-import { prisma } from "../database/prisma.js";
+
 
 interface RegiaoIBGE {
   id: number;

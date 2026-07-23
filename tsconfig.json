@@ -2,7 +2,8 @@
   "compilerOptions": {
     "target": "es2022",
     "lib": ["ES2023"],
-    "module": "node16",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "paths": {
       "@/*": ["./src/*"]
     },
@@ -11,10 +12,6 @@
     "strict": true,
     "skipLibCheck": true,
     "types": ["node"],
-    "isolatedModules": true,
-    "rootDir": "./src",
-    "outDir": "./dist"
+    "isolatedModules": true
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"]
 }

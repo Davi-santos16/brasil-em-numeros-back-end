@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { estadoroutes } from "./estados-routes.js";
-import { indicadorRoutes } from "./indicador-routes.js";
+import { estadoroutes } from "./estados-routes";
+import { indicadorRoutes } from "./indicador-routes";
 
 const routes = Router();
 
