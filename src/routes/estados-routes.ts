@@ -1,4 +1,4 @@
-import { EstadosController } from "@/controller/estados.controller";
+import { EstadosController } from "../controller/estados.controller";
 import { Router } from "express";
 
 const estadoroutes = Router();

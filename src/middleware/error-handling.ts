@@ -1,4 +1,4 @@
-import { AppError } from "@/utils/AppError";
+import { AppError } from "../utils/AppError";
 import { Response, Request, NextFunction } from "express";
 
 
