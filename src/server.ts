@@ -4,7 +4,7 @@ import { errorHandling } from "./middleware/error-handling";
 import cors from "cors";
 
 const app = express();
-const PORT = 3333;
+const PORT = process.env.PORT || 3000
 
 
 app.use(cors());
